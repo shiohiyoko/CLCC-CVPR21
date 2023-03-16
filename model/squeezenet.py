@@ -11,7 +11,7 @@ SUBTRACT_IMAGENET_MEAN = False # Subraction will not preserve original illuminan
 class SqueezeNet(object):
 
   def __init__(self, imgs):
-    self.imgs = tf.placeholder(tf.float32, [None, 224, 224, 3])
+    self.imgs = tf.compat.v1.placeholder(tf.float32, [None, 224, 224, 3])
     self.imgs = imgs
     self.weights = {}
     self.net = {}
@@ -93,7 +93,7 @@ class SqueezeNet(object):
 #     print(net['relu10'].shape)
     net['pool10'] = self.pool_layer('pool10', net['relu10'], pooling_type='avg')
 #     print(net['pool10'].shape)
-    avg_pool_shape = tf.shape(net['pool10'])
+    avg_pool_shape = tf.shape(input=net['pool10'])
 
     net['pool_reshaped'] = tf.reshape(net['pool10'], [avg_pool_shape[0], -1])
     self.fc2 = net['pool_reshaped']
@@ -104,33 +104,33 @@ class SqueezeNet(object):
 
   def bias_variable(self, shape, name, value=0.1, from_caffe=False):
     if not from_caffe:
-      self.weights[name] = tf.get_variable(
+      self.weights[name] = tf.compat.v1.get_variable(
           'bias_' + name,
-          initializer=tf.constant_initializer(value),
+          initializer=tf.compat.v1.constant_initializer(value),
           shape=shape)
     else:
-      self.weights[name] = tf.get_variable(
+      self.weights[name] = tf.compat.v1.get_variable(
           'bias_' + name,
-          initializer=tf.constant_initializer(value=value),
+          initializer=tf.compat.v1.constant_initializer(value=value),
           shape=shape)
     return self.weights[name]
 
   def weight_variable(self, shape, name=None, init='xavier'):
     if init == 'variance':
       assert False
-      initial = tf.get_variable(
+      initial = tf.compat.v1.get_variable(
           'W' + name,
           shape,
-          initializer=tf.contrib.layers.variance_scaling_initializer())
+          initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=2.0))
     elif init == 'xavier':
       assert False
-      initial = tf.get_variable(
-          'W' + name, shape, initializer=tf.contrib.layers.xavier_initializer())
+      initial = tf.compat.v1.get_variable(
+          'W' + name, shape, initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
     else:
       assert isinstance(init, np.ndarray)
 #       print(name, init.shape)
-      initial = tf.get_variable(
-          'W' + name, shape, initializer=tf.constant_initializer(value=init))
+      initial = tf.compat.v1.get_variable(
+          'W' + name, shape, initializer=tf.compat.v1.constant_initializer(value=init))
 
     self.weights[name] = initial
     return self.weights[name]
@@ -147,14 +147,14 @@ class SqueezeNet(object):
                  pooling_type='max',
                  padding='VALID'):
     if pooling_type == 'avg':
-      pool = tf.nn.avg_pool(
-          layer_input,
+      pool = tf.nn.avg_pool2d(
+          input=layer_input,
           ksize=[1, 14, 14, 1],
           strides=[1, 1, 1, 1],
           padding=padding)
     elif pooling_type == 'max':
-      pool = tf.nn.max_pool(
-          layer_input,
+      pool = tf.nn.max_pool2d(
+          input=layer_input,
           ksize=[1, 3, 3, 1],
           strides=[1, 2, 2, 1],
           padding=padding)
@@ -166,7 +166,7 @@ class SqueezeNet(object):
                  W,
                  stride=[1, 1, 1, 1],
                  padding='VALID'):
-    return tf.nn.conv2d(layer_input, W, strides=stride, padding=padding)
+    return tf.nn.conv2d(input=layer_input, filters=W, strides=stride, padding=padding)
 
   def fire_module(self,
                   layer_name,

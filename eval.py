@@ -17,7 +17,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # Disable tensorflow all warnings.
 try: # Disable annoying info and warnings.
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 except:
-    tf.logging.set_verbosity(tf.logging.ERROR)
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
     
 slim = tf.contrib.slim
 
@@ -43,11 +43,11 @@ def main(args, sess):
 
     """ Build model graph """
     x = {
-        "images": tf.placeholder(tf.float32, shape=(None, None, None, 3), name='images'),
-        "illums": tf.placeholder(tf.float32, shape=(None, 3), name='illums')
+        "images": tf.compat.v1.placeholder(tf.float32, shape=(None, None, None, 3), name='images'),
+        "illums": tf.compat.v1.placeholder(tf.float32, shape=(None, 3), name='illums')
     }
     
-    output = model.fc4.model(x["images"], is_training=False, reuse=tf.AUTO_REUSE, backbone_type=args.backbone)
+    output = model.fc4.model(x["images"], is_training=False, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=args.backbone)
         
     # Load ckpt
     print('INFO:Loading ckpt from "%s"...' % args.ckpt_path)
@@ -82,5 +82,5 @@ if __name__ == '__main__':
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
 
-    with tf.Session() as sess:
+    with tf.compat.v1.Session() as sess:
         main(args, sess)

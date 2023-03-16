@@ -39,7 +39,7 @@ class Dataloader:
 
         self.data = data
         self.dataset = dataset
-        self.iterator = self.dataset.make_one_shot_iterator()
+        self.iterator = tf.compat.v1.data.make_one_shot_iterator(self.dataset)
         self.get_batch = self.iterator.get_next()
     
     def load_paths(self, data_dir, data_name, folds):
@@ -58,7 +58,7 @@ class Dataloader:
                                  data["cc24"].astype(np.float32),
             return image, illum, cc24
             
-        return tf.py_func(_func, [path], [tf.float32, tf.float32, tf.float32], stateful=False)
+        return tf.compat.v1.py_func(_func, [path], [tf.float32, tf.float32, tf.float32], stateful=False)
             
     def preprocess_test(self, path):
         def _func(image, illum, cc24):
@@ -66,7 +66,7 @@ class Dataloader:
             return image.astype(np.float32), illum.astype(np.float32), cc24.astype(np.float32)
         
         image, illum, cc24 = self.read_data(path)
-        return tf.py_func(_func, [image, illum, cc24], [tf.float32, tf.float32, tf.float32], stateful=False)
+        return tf.compat.v1.py_func(_func, [image, illum, cc24], [tf.float32, tf.float32, tf.float32], stateful=False)
 
     def preprocess_train(self, path):
         def _func(image, illum, cc24):
@@ -92,4 +92,4 @@ class Dataloader:
             return new_image.astype(np.float32), new_illum.astype(np.float32), new_cc24.astype(np.float32)
         
         image, illum, cc24 = self.read_data(path)
-        return tf.py_func(_func, [image, illum, cc24], [tf.float32, tf.float32, tf.float32], stateful=False)
+        return tf.compat.v1.py_func(_func, [image, illum, cc24], [tf.float32, tf.float32, tf.float32], stateful=False)

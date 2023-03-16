@@ -16,15 +16,15 @@ from tqdm import tqdm
 from collections import OrderedDict
 from dataloader import Dataloader
 from config import *
+import tf_slim as slim
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # Disable tensorflow all warnings.
 
 try: # Disable annoying info and warnings.
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 except:
-    tf.logging.set_verbosity(tf.logging.ERROR)
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
     
-slim = tf.contrib.slim
 
 def print_error_percentile(exp_name, mode, cur_epoch, error_p):
     info = '[%s|%s] Epoch: %d' % (exp_name, mode, cur_epoch)
@@ -42,9 +42,9 @@ def main(sess):
     """ Build model graph """
     # Placeholders
     x = {
-        "images": tf.placeholder(tf.float32, shape=(None, None, None, 3), name='images'),
-        "illums": tf.placeholder(tf.float32, shape=(None, 3), name='illums'),
-        "cc24s": tf.placeholder(tf.float32, shape=(None, 24, 3), name='cc24s')
+        "images": tf.compat.v1.placeholder(tf.float32, shape=(None, None, None, 3), name='images'),
+        "illums": tf.compat.v1.placeholder(tf.float32, shape=(None, 3), name='illums'),
+        "cc24s": tf.compat.v1.placeholder(tf.float32, shape=(None, 24, 3), name='cc24s')
     }
     
     # Augment raw-to-raw contrastive pairs
@@ -55,25 +55,25 @@ def main(sess):
 
     with slim.arg_scope(
         [slim.conv2d, slim.fully_connected],
-        weights_regularizer=slim.l2_regularizer(GLOBAL_WEIGHT_DECAY)):
+        weights_regularizer=tf.keras.regularizers.l2(0.5 * (GLOBAL_WEIGHT_DECAY))):
 
         # Color constancy branch.
-        train_out = model.fc4.model(x["images"], is_training=True, reuse=tf.AUTO_REUSE, backbone_type=BACKBONE)
-        test_out = model.fc4.model(x["images"], is_training=False, reuse=tf.AUTO_REUSE, backbone_type=BACKBONE)
+        train_out = model.fc4.model(x["images"], is_training=True, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=BACKBONE)
+        test_out = model.fc4.model(x["images"], is_training=False, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=BACKBONE)
 
         # Contrastive learning branch.
-        a_features = model.fc4.model(util.perturb.perturb(a_images),is_training=True, reuse=tf.AUTO_REUSE, backbone_type=BACKBONE)["features"]
-        easy_p_features = model.fc4.model(util.perturb.perturb(easy_p_images), is_training=True, reuse=tf.AUTO_REUSE, backbone_type=BACKBONE)["features"]
-        easy_n_features = model.fc4.model(util.perturb.perturb(easy_n_images), is_training=True, reuse=tf.AUTO_REUSE, backbone_type=BACKBONE)["features"]
-        hard_p_features = model.fc4.model(util.perturb.perturb(hard_p_images), is_training=True, reuse=tf.AUTO_REUSE, backbone_type=BACKBONE)["features"]
-        hard_n_features = model.fc4.model(util.perturb.perturb(hard_n_images), is_training=True, reuse=tf.AUTO_REUSE, backbone_type=BACKBONE)["features"]
+        a_features = model.fc4.model(util.perturb.perturb(a_images),is_training=True, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=BACKBONE)["features"]
+        easy_p_features = model.fc4.model(util.perturb.perturb(easy_p_images), is_training=True, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=BACKBONE)["features"]
+        easy_n_features = model.fc4.model(util.perturb.perturb(easy_n_images), is_training=True, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=BACKBONE)["features"]
+        hard_p_features = model.fc4.model(util.perturb.perturb(hard_p_images), is_training=True, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=BACKBONE)["features"]
+        hard_n_features = model.fc4.model(util.perturb.perturb(hard_n_images), is_training=True, reuse=tf.compat.v1.AUTO_REUSE, backbone_type=BACKBONE)["features"]
 
         # Feature projection
-        a_features = model.mlp.MLP(a_features, 'MLP', tf.AUTO_REUSE) # (b, c)
-        easy_p_features = model.mlp.MLP(easy_p_features, 'MLP', tf.AUTO_REUSE)
-        easy_n_features = model.mlp.MLP(easy_n_features, 'MLP', tf.AUTO_REUSE)
-        hard_p_features = model.mlp.MLP(hard_p_features, 'MLP', tf.AUTO_REUSE)
-        hard_n_features = model.mlp.MLP(hard_n_features, 'MLP', tf.AUTO_REUSE)
+        a_features = model.mlp.MLP(a_features, 'MLP', tf.compat.v1.AUTO_REUSE) # (b, c)
+        easy_p_features = model.mlp.MLP(easy_p_features, 'MLP', tf.compat.v1.AUTO_REUSE)
+        easy_n_features = model.mlp.MLP(easy_n_features, 'MLP', tf.compat.v1.AUTO_REUSE)
+        hard_p_features = model.mlp.MLP(hard_p_features, 'MLP', tf.compat.v1.AUTO_REUSE)
+        hard_n_features = model.mlp.MLP(hard_n_features, 'MLP', tf.compat.v1.AUTO_REUSE)
         
     """ Build loss """
     # Training loss
@@ -86,7 +86,7 @@ def main(sess):
                     (a_features, hard_p_features, easy_n_features),
                     (a_features, hard_p_features, hard_n_features)]:
         contrastive_losses = util.loss.nce_loss(a, p, n, N_NEGATIVE, average=False)
-        contrastive_loss += tf.reduce_mean(contrastive_losses * contrastive_loss_masks) # for training.
+        contrastive_loss += tf.reduce_mean(input_tensor=contrastive_losses * contrastive_loss_masks) # for training.
     contrastive_loss /= 4
 
     # Testing loss
@@ -94,29 +94,29 @@ def main(sess):
 
     """ Build training op """
     pretrain_loss = (0.1 * color_constancy_loss) + contrastive_loss + reg_loss
-    pretrain_op = tf.train.AdamOptimizer(LEARNING_RATE).minimize(pretrain_loss)
+    pretrain_op = tf.compat.v1.train.AdamOptimizer(LEARNING_RATE).minimize(pretrain_loss)
 
     jointtrain_loss = color_constancy_loss + (0.1 * contrastive_loss) + reg_loss
-    jointtrain_op = tf.train.AdamOptimizer(LEARNING_RATE).minimize(jointtrain_loss)
+    jointtrain_op = tf.compat.v1.train.AdamOptimizer(LEARNING_RATE).minimize(jointtrain_loss)
     
     """ Print variables """
     print('-'*100 + '\n')
-    var_list = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES) # All trainable vars.
+    var_list = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES) # All trainable vars.
     slim.model_analyzer.analyze_vars(var_list, print_info=True)
     print('-'*100 + '\n')
     
     """ Start training """
     trigger = util.trigger.Trigger(minimize=True)
-    saver = tf.train.Saver(max_to_keep=None)
+    saver = tf.compat.v1.train.Saver(max_to_keep=None)
     num_train_iterations = train_dataloader.data_count // train_dataloader.batch_size # Iterations per training epoch.
     num_test_iterations = test_dataloader.data_count
-    sess.run(tf.global_variables_initializer())
+    sess.run(tf.compat.v1.global_variables_initializer())
     
     # Squeezenet loads imagenet pretrained weights internally
     # Alexnet needs to load it explicitly.
     if BACKBONE == 'alexnet':
         # Variable scope should be consistent to current model graph.
-        with tf.variable_scope('FCN/AlexNet', reuse=True):
+        with tf.compat.v1.variable_scope('FCN/AlexNet', reuse=True):
             from model.alexnet import AlexNet
             AlexNet.load_initial_weights(sess)
             
@@ -172,5 +172,5 @@ def main(sess):
                 print('INFO:Save checkpoint to "%s".' % ckpt_path)
     
 if __name__ == '__main__':
-    with tf.Session() as sess:
+    with tf.compat.v1.Session() as sess:
         main(sess)
