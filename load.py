@@ -28,7 +28,7 @@ def read_data(path):
 if __name__ == '__main__':
     dir = 'data'
     name = 'gehler'
-    fold = 0
+    fold = [0]
     path = load_paths(dir, name, fold)
     image, illum, cc24 = read_data(path)
     print('image',image) 
