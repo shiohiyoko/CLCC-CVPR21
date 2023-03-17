@@ -7,6 +7,9 @@ import tensorflow as tf
 import util.fc4_augmentation
 from glob import glob
 from dataset import ImageRecord
+import sys
+sys.path.append(os.path.abspath(".") + './')
+
 
 def load_paths( data_dir, data_name, folds):
     paths = []
