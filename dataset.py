@@ -103,7 +103,6 @@ class DataSet:
         cv2.waitKey(0)
 
       image_pack.append(r)
-    print
     self.dump_image_pack(image_pack, fold)
 
   def regenerate_image_packs(self):
