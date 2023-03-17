@@ -136,7 +136,7 @@ class SqueezeNet(object):
     return self.weights[name]
 
   def relu_layer(self, layer_name, layer_input, b=None):
-    if b:
+    if b is not None:
       layer_input += b
     relu = tf.nn.relu(layer_input)
     return relu
