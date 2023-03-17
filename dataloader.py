@@ -47,13 +47,13 @@ class Dataloader:
         for fold in folds:
             paths += glob(os.path.join('./',data_dir, data_name, str(fold), '*.pkl'))
             print('INFO:Loading dataset from "%s"...' % os.path.join(data_dir, data_name, str(fold)))
-            print('the path for pickles', paths)
         return paths
     
     def read_data(self, path):
         def _func(path):
             with open(path, 'rb') as f:
                 data = pickle.load(f)
+            print('data', data)
             image, illum, cc24 = data["image"].astype(np.float32),\
                                  data["illum"].astype(np.float32),\
                                  data["cc24"].astype(np.float32),
@@ -82,7 +82,7 @@ class Dataloader:
             gt_idx = np.argmin(errors)
 
             try:
-                assert gt_idx in [23,22,21,20,19,18] # Gray indices
+                assert gt_idx in [23,22,21,20,19,18], ' Gray indices '
                 cc24[gt_idx] = illum # Replace with dataset GT.
             except:
                 pass
@@ -93,4 +93,5 @@ class Dataloader:
             return new_image.astype(np.float32), new_illum.astype(np.float32), new_cc24.astype(np.float32)
         
         image, illum, cc24 = self.read_data(path)
+        print('illum', illum)
         return tf.compat.v1.py_func(_func, [image, illum, cc24], [tf.float32, tf.float32, tf.float32], stateful=False)
