@@ -17,6 +17,7 @@ from collections import OrderedDict
 from dataloader import Dataloader
 from config import *
 import tf_slim as slim
+from dataset import ImageRecord
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # Disable tensorflow all warnings.
 
