@@ -109,8 +109,8 @@ def main(sess):
     trigger = util.trigger.Trigger(minimize=True)
     saver = tf.compat.v1.train.Saver(max_to_keep=None)
     num_train_iterations = train_dataloader.data_count // train_dataloader.batch_size # Iterations per training epoch.
-
     print('num_train_iterations', num_train_iterations)
+    print(train_dataloader.dataset)
     num_test_iterations = test_dataloader.data_count
     sess.run(tf.compat.v1.global_variables_initializer())
     
