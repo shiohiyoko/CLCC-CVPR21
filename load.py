@@ -36,8 +36,8 @@ if __name__ == '__main__':
     fold = [0]
     path = load_paths(dir, name, fold)
     image, illum, cc24 = read_data(path[0])
-    print('image',image) 
-    print('illum',illum)
-    print('cc24', cc24)
+    print('image',image.shape()) 
+    print('illum',illum.shape())
+    print('cc24', cc24.shape())
         
         
