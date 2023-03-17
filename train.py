@@ -133,6 +133,7 @@ def main(sess):
         train_errors = OrderedDict([('loss', []), ('cc_loss', []), ('cl_loss', [])])
         for _ in tqdm(range(num_train_iterations)):
             batch = sess.run(train_dataloader.get_batch)
+            print('print batch data',batch)
             _, train_loss_val, color_constancy_loss_val, contrastive_loss_val = \
                 sess.run([train_op, train_loss, color_constancy_loss, contrastive_loss], feed_dict={
                     x["images"]: batch[0],
