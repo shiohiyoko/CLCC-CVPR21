@@ -97,6 +97,7 @@ class DataSet:
     print('Dumping image packs...')
     print('%s folds found' % len(meta_data))
     for f, m in enumerate(meta_data):
+      print(f)
       self.regenerate_image_pack(m, f)
 
   def get_folds(self):
