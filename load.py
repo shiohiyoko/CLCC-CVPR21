@@ -3,7 +3,7 @@ import cv2
 import pickle
 import math
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
 import util.fc4_augmentation
 from glob import glob
 from dataset import ImageRecord
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     name = 'gehler'
     fold = [0]
     path = load_paths(dir, name, fold)
-    image, illum, cc24 = read_data(path)
+    image, illum, cc24 = read_data(path[0])
     print('image',image) 
     # illum, cc24)
         
