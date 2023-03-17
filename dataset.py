@@ -9,12 +9,13 @@ import random
 from utils import slice_list
 from imagerecord import ImageRecord
 
-SHOW_IMAGES = False
+SHOW_IMAGES = True
 FOLDS = 3
 
 DATA_FRAGMENT = -1
 BOARD_FILL_COLOR = 1e-5
 
+file = ['']
 
 def get_image_pack_fn(key):
   ds = key[0]
