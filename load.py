@@ -23,6 +23,7 @@ def read_data(path):
     
     with open(path, 'rb') as f:
         data = pickle.load(f)
+    print(data)
     image, illum, cc24 = data["image"].astype(np.float32),\
                             data["illum"].astype(np.float32),\
                             data["cc24"].astype(np.float32),
