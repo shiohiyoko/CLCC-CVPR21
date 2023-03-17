@@ -6,6 +6,7 @@ import numpy as np
 import tensorflow as tf
 import util.fc4_augmentation
 from glob import glob
+from dataset import ImageRecord
         
 class Dataloader:
     def __init__(self,
