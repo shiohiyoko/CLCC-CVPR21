@@ -9,7 +9,7 @@ import random
 from utils import slice_list
 from imagerecord import ImageRecord
 
-SHOW_IMAGES = True
+SHOW_IMAGES = False
 FOLDS = 3
 
 DATA_FRAGMENT = -1
@@ -98,7 +98,7 @@ class DataSet:
     print('Dumping image packs...')
     print('%s folds found' % len(meta_data))
     for f, m in enumerate(meta_data):
-      print(f)
+      # print(f)
       self.regenerate_image_pack(m, f)
 
   def get_folds(self):
