@@ -47,6 +47,7 @@ class Dataloader:
         for fold in folds:
             paths += glob(os.path.join(data_dir, data_name, str(fold), '*.pkl'))
             print('INFO:Loading dataset from "%s"...' % os.path.join(data_dir, data_name, str(fold)))
+            print('the path for pickles', paths)
         return paths
     
     def read_data(self, path):
