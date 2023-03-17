@@ -24,9 +24,9 @@ def read_data(path):
     with open(path, 'rb') as f:
         data = pickle.load(f)
     print(type(data[0]))
-    image, illum, cc24 = data[0]["image"].astype(np.float32),\
-                            data[0]["illum"].astype(np.float32),\
-                            data[0]["cc24"].astype(np.float32),
+    image, illum, cc24 = data[0].image.astype(np.float32),\
+                            data[0].illum.astype(np.float32),\
+                            data[0].cc24.astype(np.float32),
     return image, illum, cc24
 
 
