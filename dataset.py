@@ -1,6 +1,6 @@
 import cv2
-#import cPickle as pickle
-import _pickle as cPickle
+#import pickle as pickle
+import pickle
 import scipy.io
 import numpy as np
 import os
@@ -63,13 +63,13 @@ class DataSet:
     print('  Slices:', map(len, meta_data))
     with open(self.get_meta_data_fn(), 'wb') as f:
       #pickle.dump(meta_data, f, protocol=-1)
-      cPickle.dump(meta_data, f, protocol=-1)
+      pickle.dump(meta_data, f, protocol=-1)
     print('Dumped.')
 
   def load_meta_data(self):
     with open(self.get_meta_data_fn(), 'rb') as f:
       #return pickle.load(f)
-      return cPickle.load(f, encoding="unicode")
+      return pickle.load(f, encoding="unicode")
 
   def get_image_pack_fn(self, fold):
     return self.get_directory() + self.get_subset_name(
@@ -78,7 +78,7 @@ class DataSet:
   def dump_image_pack(self, image_pack, fold):
     with open(self.get_image_pack_fn(fold), 'wb') as f:
       #pickle.dump(image_pack, f, protocol=-1)
-      cPickle.dump(image_pack, f, protocol=-1)
+      pickle.dump(image_pack, f, protocol=-1)
 
   def load_image_pack(self, fold):
     with open(self.get_meta_data_fn()) as f:

@@ -256,7 +256,7 @@ def slice_list(l, fractions):
 
 def get_session():
 #  import tensorflow as tf
-  import tensorflow.compat.v1 as tf
+  import tensorflow as tf
   tf.disable_v2_behavior()
 
   config = tf.ConfigProto()
