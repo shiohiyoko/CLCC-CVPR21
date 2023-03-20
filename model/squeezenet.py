@@ -59,7 +59,7 @@ class SqueezeNet(object):
 
     net['relu1'] = self.relu_layer(
         'relu1', 
-        layer_input = net['conv1'], 
+        net['conv1'], 
         self.model['conv1_weights'],
         b=self.model['conv1_bias'])
     net['pool1'] = self.pool_layer('pool1', net['relu1'])
