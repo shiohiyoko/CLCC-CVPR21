@@ -222,7 +222,7 @@ class SqueezeNet(object):
         padding='SAME')  # 'SAME' and 'VALID' padding should be the same here
     fire['e3'] = self.conv_layer(
         layer_name + '_e3', fire['relu1'], W=e3_weight, padding='SAME')
-    fire['concat'] = tf.compat.v1.sparse_concat(3,[
+    fire['concat'] = tf.concat([
         tf.add(fire['e1'],
                self.bias_variable(
                    [e1x1],
@@ -233,7 +233,7 @@ class SqueezeNet(object):
                    [e3x3],
                    name=layer_name + '_fire_bias_e3',
                    value=self.model[layer_name + '/' + 'expand3x3_bias']))
-    ])
+    ],3)
 
     if residual:
       fire['relu2'] = self.relu_layer(layer_name + 'relu2_res',
