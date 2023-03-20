@@ -130,16 +130,17 @@ class GehlerDataSet(DataSet):
     ground_truth /= np.linalg.norm(ground_truth, axis=1)[..., np.newaxis]
     filenames = sorted(os.listdir(self.get_directory() + 'images'))
     folds = scipy.io.loadmat(self.get_directory() + 'folds.mat')
-    print(folds)
+    # print(folds)
     cc24 = scipy.io.loadmat(self.get_directory() +'groundtruth_568/' +'colourchecker_gamma1_bit12.mat')['real_rgb']
-    print(cc24)
+    # print(cc24)
 
     filenames2 = map(lambda x: str(x[0][0][0]), folds['Xfiles'])
     filenames2 = list(filenames2) ## Added by G
+    test_split = map(lambda x: x[0][0][0], folds['te_split'])
 
     #print filenames
     #print filenames2
-    print('filename', filenames2)
+    print('filename', test_split)
     for i in range(len(filenames)):
       assert filenames[i][:-4] == filenames2[i][:-4]
     for i in range(len(filenames)):
