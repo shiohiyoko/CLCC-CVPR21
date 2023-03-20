@@ -26,7 +26,7 @@ def read_data(path):
     print(type(data[0]))
     image, illum, cc24 = data[0].img.astype(np.float32),\
                             data[0].illum.astype(np.float32),\
-                            data[0].mcc_coord.astype(np.float32),
+                            data[0].cc24s.astype(np.float32),
     return image, illum, cc24
 
 
