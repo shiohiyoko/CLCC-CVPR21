@@ -54,17 +54,16 @@ class SqueezeNet(object):
               name='conv1_w',
               init=np.transpose(self.model['conv1_weights'], [2, 3, 1, 0])),
           stride=[1, 2, 2, 1],
-          padding='VALID', activation = 'relu') + self.model['conv1_bias'][None, None, None, :]
+          padding='VALID') + self.model['conv1_bias'][None, None, None, :]
 
-    # net['relu1'] = self.relu_layer(
-    #     'relu1', net['conv1'], 
-    #     self.weight_variable(
-    #         [3, 3, 3, 64],
-    #         name='conv1_w',
-    #         init=np.transpose(self.model['conv1_weights'], [2, 3, 1, 0])),
-        # b=self.bias_variable([64], 'relu1_b', value=0.0))
-    # net['pool1'] = self.pool_layer('pool1', net['relu1'])
-    net['pool1'] = self.pool_layer('pool1', net['conv1'])
+    net['relu1'] = self.relu_layer(
+        'relu1', net['conv1'], 
+        self.weight_variable(
+            [3, 3, 3, 64],
+            name='conv1_w',
+            init=np.transpose(self.model['conv1_weights'], [2, 3, 1, 0])),
+        b=self.bias_variable([64], 'relu1_b', value=0.0))
+    net['pool1'] = self.pool_layer('pool1', net['relu1'])
 
     net['fire2'] = self.fire_module('fire2', net['pool1'], 16, 64, 64)
     net['fire3'] = self.fire_module('fire3', net['fire2'], 16, 64, 64)
@@ -90,16 +89,18 @@ class SqueezeNet(object):
               [1, 1, 512, 1000],
               name='conv10',
               init=np.transpose(self.model['conv10_weights'], [2, 3, 1, 0])),
-          padding='VALID', activation='relu') + self.model['conv10_bias'][None, None, None, :]
+          padding='VALID') + self.model['conv10_bias'][None, None, None, :]
 #     print(net['conv10'].shape)
-    # net['relu10'] = self.relu_layer(
-    #     'relu10',
-    #     net['conv10'],
-    #     self.weight_variable(),
-    #     b=self.bias_variable([1000], 'relu10_b', value=0.0))
+    net['relu10'] = self.relu_layer(
+        'relu10',
+        net['conv10'],
+        self.weight_variable(
+              [1, 1, 512, 1000],
+              name='conv10',
+              init=np.transpose(self.model['conv10_weights'], [2, 3, 1, 0])),
+        b=self.bias_variable([1000], 'relu10_b', value=0.0))
 #     print(net['relu10'].shape)
-    # net['pool10'] = self.pool_layer('pool10', net['relu10'], pooling_type='avg')
-    net['pool10'] = self.pool_layer('pool10', net['conv10'], pooling_type='avg')
+    net['pool10'] = self.pool_layer('pool10', net['relu10'], pooling_type='avg')
 #     print(net['pool10'].shape)
     avg_pool_shape = tf.compat.v1.shape(input=net['pool10'])
 
@@ -173,9 +174,8 @@ class SqueezeNet(object):
                  layer_input,
                  W,
                  stride=[1, 1, 1, 1],
-                 padding='VALID',
-                 activation= None):
-    return tf.compat.v1.nn.conv2d(input=layer_input, filters=W, strides=stride, padding=padding, activation=activation)
+                 padding='VALID'):
+    return tf.compat.v1.nn.conv2d(input=layer_input, filters=W, strides=stride, padding=padding)
 
   def fire_module(self,
                   layer_name,
@@ -208,47 +208,19 @@ class SqueezeNet(object):
             self.model[layer_name + '/' + 'expand3x3_weights'],
             axes=[2, 3, 1, 0]))
 
-    # fire['s1'] = self.conv_layer(
-    #     layer_name + '_s1', layer_input, W=s1_weight, padding='SAME')
-    # fire['relu1'] = self.relu_layer(
-    #     layer_name + '_relu1',
-    #     fire['s1'],
-    #     s1_weight,
-    #     b=self.bias_variable([s1x1], layer_name + '_fire_bias_s1'))
-
-    # fire['e1'] = self.conv_layer(
-    #     layer_name + '_e1', fire['relu1'], W=e1_weight,
-    #     padding='SAME')  # 'SAME' and 'VALID' padding should be the same here
-    # fire['e3'] = self.conv_layer(
-    #     layer_name + '_e3', fire['relu1'], W=e3_weight, padding='SAME')
-    # fire['concat'] = tf.compat.v1.sparse_concat(3,[
-    #     tf.add(fire['e1'],
-    #            self.bias_variable(
-    #                [e1x1],
-    #                name=layer_name + '_fire_bias_e1',
-    #                value=self.model[layer_name + '/' + 'expand1x1_bias'])),
-    #     tf.add(fire['e3'],
-    #            self.bias_variable(
-    #                [e3x3],
-    #                name=layer_name + '_fire_bias_e3',
-    #                value=self.model[layer_name + '/' + 'expand3x3_bias']))
-    # ])
-
-    # if residual:
-    #   fire['relu2'] = self.relu_layer(layer_name + 'relu2_res',
-    #                                   tf.add(fire['concat'], e3_weight, layer_input))
-    # else:
-    #   fire['relu2'] = self.relu_layer(layer_name + '_relu2', fire['concat'], e3_weight)
-    # self.net[layer_name + '_debug'] = fire['relu2']
-    # return fire['relu2']
-  
     fire['s1'] = self.conv_layer(
-        layer_name + '_s1', layer_input, W=s1_weight, padding='SAME', activation='relu')
+        layer_name + '_s1', layer_input, W=s1_weight, padding='SAME')
+    fire['relu1'] = self.relu_layer(
+        layer_name + '_relu1',
+        fire['s1'],
+        s1_weight,
+        b=self.bias_variable([s1x1], layer_name + '_fire_bias_s1'))
+
     fire['e1'] = self.conv_layer(
-        layer_name + '_e1', fire['s1'], W=e1_weight, padding='SAME', activation='relu')  # 'SAME' and 'VALID' padding should be the same here
-    fire['e3'] = self.conv_layer( 
-        layer_name + '_e3', fire['e1'], W=e3_weight, padding='SAME', activation='relu')
-    
+        layer_name + '_e1', fire['relu1'], W=e1_weight,
+        padding='SAME')  # 'SAME' and 'VALID' padding should be the same here
+    fire['e3'] = self.conv_layer(
+        layer_name + '_e3', fire['relu1'], W=e3_weight, padding='SAME')
     fire['concat'] = tf.compat.v1.sparse_concat(3,[
         tf.add(fire['e1'],
                self.bias_variable(
