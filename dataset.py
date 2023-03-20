@@ -73,13 +73,13 @@ class DataSet:
 
   def get_image_pack_fn(self, fold, idx):
     return self.get_directory() + self.get_subset_name(
-    ) + idx + '/image_pack.%d.pkl' % fold
+    ) + str(idx) + '/image_pack.%d.pkl' % fold
 
   def dump_image_pack(self, image_pack, fold):
-    for idx in image_pack:
+    for idx, img in enumerate(image_pack):
       with open(self.get_image_pack_fn(fold, idx), 'wb') as f:
         #pickle.dump(image_pack, f, protocol=-1)
-        pickle.dump(image_pack, f, protocol=-1)
+        pickle.dump(img, f, protocol=-1)
 
   def load_image_pack(self, fold):
     with open(self.get_meta_data_fn()) as f:
