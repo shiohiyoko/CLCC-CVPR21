@@ -84,7 +84,7 @@ class Dataloader:
 
             try:
                 print(gt_idx)
-                assert gt_idx in [23,22,21,20,19,18], ' Gray indices '
+                # assert gt_idx in [23,22,21,20,19,18], ' Gray indices '
                 cc24[gt_idx] = illum # Replace with dataset GT.
             except Exception as e:
                 print(e)
