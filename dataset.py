@@ -73,7 +73,7 @@ class DataSet:
 
   def get_image_pack_fn(self, fold, idx):
     return self.get_directory() + self.get_subset_name(
-    ) + str(idx) + '/image_pack.%d.pkl' % fold
+    ) + str(fold) + '/image_pack.%d.pkl' % idx
 
   def dump_image_pack(self, image_pack, fold):
     for idx, img in enumerate(image_pack):
