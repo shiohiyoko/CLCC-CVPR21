@@ -154,7 +154,7 @@ class SqueezeNet(object):
     #   layer_input += b
     print('relu input', layer_input.get_shape())
     print('weight', weight.get_shape())
-    print('b', b.get_shape())
+    print('b', b.shape)
     
     relu = tf.compat.v1.nn.relu_layer(layer_input, weight, b)
     return relu
