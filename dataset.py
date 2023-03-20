@@ -130,7 +130,7 @@ class GehlerDataSet(DataSet):
     filenames = sorted(os.listdir(self.get_directory() + 'images'))
     folds = scipy.io.loadmat(self.get_directory() + 'folds.mat')
 
-    cc24 = scipy.io.loadmat(self.get_directory() +'groundtruth_568/' +'colourchecker_gamma1_bit12.mat')
+    cc24 = scipy.io.loadmat(self.get_directory() +'groundtruth_568/' +'colourchecker_gamma1_bit12.mat')['real_rgb']
     print(cc24)
 
     filenames2 = map(lambda x: str(x[0][0][0]), folds['Xfiles'])
