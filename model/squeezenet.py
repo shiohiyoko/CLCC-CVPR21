@@ -187,6 +187,7 @@ class SqueezeNet(object):
     fire = {}
 
     shape = layer_input.get_shape()
+    print(shape)
 
     # squeeze np.transpose(self.model['conv1_weights'], [2,3,1,0])),
     s1_weight = self.weight_variable(
