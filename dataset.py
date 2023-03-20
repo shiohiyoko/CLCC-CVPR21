@@ -62,6 +62,7 @@ class DataSet:
     print('  Slices:', map(len, meta_data))
     with open(self.get_meta_data_fn(), 'wb') as f:
       #pickle.dump(meta_data, f, protocol=-1)
+      
       pickle.dump(meta_data, f, protocol=-1)
     print('Dumped.')
 
@@ -129,7 +130,7 @@ class GehlerDataSet(DataSet):
     ground_truth /= np.linalg.norm(ground_truth, axis=1)[..., np.newaxis]
     filenames = sorted(os.listdir(self.get_directory() + 'images'))
     folds = scipy.io.loadmat(self.get_directory() + 'folds.mat')
-
+    print(folds)
     cc24 = scipy.io.loadmat(self.get_directory() +'groundtruth_568/' +'colourchecker_gamma1_bit12.mat')['real_rgb']
     print(cc24)
 
