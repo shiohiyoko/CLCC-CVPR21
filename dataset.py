@@ -149,7 +149,7 @@ class GehlerDataSet(DataSet):
               fn=fn,
               illum=ground_truth[i],
               mcc_coord=mcc_coord,
-              cc24s = cc24,
+              cc24s = cc24[i],
               img=None))
 
     if DATA_FRAGMENT != -1:
