@@ -46,6 +46,7 @@ class SqueezeNet(object):
     net['input'] = images
     # conv1_1
     
+    print( 'conv1 weights', self.model['conv1_weights'])
     net['conv1'] = self.conv_layer(
           'conv1',
           net['input'],
@@ -57,7 +58,8 @@ class SqueezeNet(object):
           padding='VALID') + self.model['conv1_bias'][None, None, None, :]
 
     net['relu1'] = self.relu_layer(
-        'relu1', net['conv1'], 
+        'relu1', 
+        layer_input = net['conv1'], 
         self.model['conv1_weights'],
         b=self.model['conv1_bias'])
     net['pool1'] = self.pool_layer('pool1', net['relu1'])
