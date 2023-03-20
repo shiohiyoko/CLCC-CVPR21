@@ -99,7 +99,7 @@ class SqueezeNet(object):
     self.fc2 = net['pool_reshaped']
     self.logits = net['pool_reshaped']
 
-    self.probs = tf.nn.softmax(self.logits)
+    self.probs = tf.compat.v1.math.softmax(self.logits)
     self.net = net
 
   def bias_variable(self, shape, name, value=0.1, from_caffe=False):
@@ -166,7 +166,7 @@ class SqueezeNet(object):
                  W,
                  stride=[1, 1, 1, 1],
                  padding='VALID'):
-    return tf.nn.conv2d(input=layer_input, filters=W, strides=stride, padding=padding)
+    return tf.compat.v1.nn.conv2d(input=layer_input, filters=W, strides=stride, padding=padding)
 
   def fire_module(self,
                   layer_name,
