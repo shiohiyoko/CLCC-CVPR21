@@ -126,9 +126,8 @@ class GehlerDataSet(DataSet):
   def regenerate_meta_data(self):
     meta_data = []
     print("Loading and shuffle fn_and_illum[]")
-    ground_truth = scipy.io.loadmat(self.get_directory() + 'ground_truth.mat')[
-        'real_rgb']
-    ground_truth /= np.linalg.norm(ground_truth, axis=1)[..., np.newaxis]
+    ground_truth = scipy.io.loadmat(self.get_directory() + 'groundtruth_568/' + 'real_illum_568.mat')
+    # ground_truth /= np.linalg.norm(ground_truth, axis=1)[..., np.newaxis]
     filenames = sorted(os.listdir(self.get_directory() + 'images'))
     folds = scipy.io.loadmat(self.get_directory() + 'folds.mat')
     # print(folds)
@@ -137,11 +136,11 @@ class GehlerDataSet(DataSet):
 
     filenames2 = map(lambda x: str(x[0][0][0]), folds['Xfiles'])
     filenames2 = list(filenames2) ## Added by G
-    test_split = folds['te_split'][0]
 
     #print filenames
     #print filenames2
-    print('filename', folds)
+
+    print('filename', ground_truth)
     for i in range(len(filenames)):
       assert filenames[i][:-4] == filenames2[i][:-4]
     for i in range(len(filenames)):
