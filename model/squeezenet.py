@@ -148,7 +148,7 @@ class SqueezeNet(object):
     if b is not None:
       layer_input += b
     
-    relu = tf.nn.relu_layer(layer_input)
+    relu = tf.nn.relu(layer_input)
     return relu
 
   def pool_layer(self,
