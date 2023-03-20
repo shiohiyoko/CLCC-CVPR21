@@ -55,9 +55,9 @@ class Dataloader:
             
             with open(path, 'rb') as f:
                 data = pickle.load(f)
-            image, illum, cc24 = data.img.astype(np.float32),\
-                                 data.illum.astype(np.float32),\
-                                 data.cc24s.astype(np.float32),
+            image, illum, cc24 = [x.img.astype(np.float32) for x in data],\
+                                 [x.illum.astype(np.float32) for x in data],\
+                                 [x.cc24s.astype(np.float32) for x in data]
             return image, illum, cc24
             
         return tf.compat.v1.py_func(_func, [path], [tf.float32, tf.float32, tf.float32], stateful=False)
