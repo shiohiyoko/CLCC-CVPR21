@@ -55,7 +55,7 @@ class Dataloader:
             
             with open(path, 'rb') as f:
                 data = pickle.load(f)
-            image, illum, cc24 = data.image.astype(np.float32),\
+            image, illum, cc24 = data.img.astype(np.float32),\
                                  data.illum.astype(np.float32),\
                                  data.cc24s.astype(np.float32),
             return image, illum, cc24
