@@ -57,7 +57,12 @@ class SqueezeNet(object):
           padding='VALID') + self.model['conv1_bias'][None, None, None, :]
 
     net['relu1'] = self.relu_layer(
-        'relu1', net['conv1'], b=self.bias_variable([64], 'relu1_b', value=0.0))
+        'relu1', net['conv1'], 
+        self.weight_variable(
+            [3, 3, 3, 64],
+            name='conv1_w',
+            init=np.transpose(self.model['conv1_weights'], [2, 3, 1, 0])),
+        b=self.bias_variable([64], 'relu1_b', value=0.0))
     net['pool1'] = self.pool_layer('pool1', net['relu1'])
 
     net['fire2'] = self.fire_module('fire2', net['pool1'], 16, 64, 64)
@@ -208,6 +213,7 @@ class SqueezeNet(object):
     fire['relu1'] = self.relu_layer(
         layer_name + '_relu1',
         fire['s1'],
+        s1_weight,
         b=self.bias_variable([s1x1], layer_name + '_fire_bias_s1'))
 
     fire['e1'] = self.conv_layer(
@@ -230,9 +236,9 @@ class SqueezeNet(object):
 
     if residual:
       fire['relu2'] = self.relu_layer(layer_name + 'relu2_res',
-                                      tf.add(fire['concat'], layer_input))
+                                      tf.add(fire['concat'], e3_weight, layer_input))
     else:
-      fire['relu2'] = self.relu_layer(layer_name + '_relu2', fire['concat'])
+      fire['relu2'] = self.relu_layer(layer_name + '_relu2', fire['concat'], e3_weight)
     self.net[layer_name + '_debug'] = fire['relu2']
     return fire['relu2']
 
