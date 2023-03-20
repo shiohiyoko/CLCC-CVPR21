@@ -126,8 +126,8 @@ class GehlerDataSet(DataSet):
   def regenerate_meta_data(self):
     meta_data = []
     print("Loading and shuffle fn_and_illum[]")
-    ground_truth = scipy.io.loadmat(self.get_directory() + 'groundtruth_568/' + 'real_illum_568.mat')
-    # ground_truth /= np.linalg.norm(ground_truth, axis=1)[..., np.newaxis]
+    ground_truth = scipy.io.loadmat(self.get_directory() + 'groundtruth_568/' + 'real_illum_568.mat')['real_rgb']
+    ground_truth /= np.linalg.norm(ground_truth, axis=1)[..., np.newaxis]
     filenames = sorted(os.listdir(self.get_directory() + 'images'))
     folds = scipy.io.loadmat(self.get_directory() + 'folds.mat')
     # print(folds)
