@@ -136,11 +136,11 @@ class GehlerDataSet(DataSet):
 
     filenames2 = map(lambda x: str(x[0][0][0]), folds['Xfiles'])
     filenames2 = list(filenames2) ## Added by G
-    test_split = folds['te_split']
+    test_split = folds['te_split'][0]
 
     #print filenames
     #print filenames2
-    print('test', test_split.shape)
+    print('test', test_split[0].shape)
     print('filename', filenames2)
     for i in range(len(filenames)):
       assert filenames[i][:-4] == filenames2[i][:-4]
