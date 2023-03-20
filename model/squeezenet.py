@@ -55,6 +55,7 @@ class SqueezeNet(object):
               init=np.transpose(self.model['conv1_weights'], [2, 3, 1, 0])),
           stride=[1, 2, 2, 1],
           padding='VALID') + self.model['conv1_bias'][None, None, None, :]
+    print('conv1 shape', net['conv1'].get_shape())
 
     net['relu1'] = self.relu_layer(
         'relu1', 
@@ -65,7 +66,6 @@ class SqueezeNet(object):
         b=self.model['conv1_bias'])
     
     print('relu shape', net['relu1'].get_shape())
-    print('conv1 shape', net['conv1'].get_shape())
     
     net['pool1'] = self.pool_layer('pool1', net['relu1'])
 
