@@ -59,7 +59,7 @@ class SqueezeNet(object):
     net['relu1'] = self.relu_layer(
         'relu1', net['conv1'], 
         self.model['conv1_weights'],
-        b=self.bias_variable([64], 'relu1_b', value=0.0))
+        b=self.model['conv1_bias'])
     net['pool1'] = self.pool_layer('pool1', net['relu1'])
 
     net['fire2'] = self.fire_module('fire2', net['pool1'], 16, 64, 64)
