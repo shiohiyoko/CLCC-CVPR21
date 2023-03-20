@@ -136,7 +136,7 @@ class GehlerDataSet(DataSet):
 
     filenames2 = map(lambda x: str(x[0][0][0]), folds['Xfiles'])
     filenames2 = list(filenames2) ## Added by G
-    test_split = map(lambda x: x[0], folds['te_split'])
+    test_split = map(lambda x: x[0][0], folds['te_split'])
     test_split = list(test_split) ## Added by G
 
     #print filenames
