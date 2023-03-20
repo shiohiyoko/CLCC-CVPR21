@@ -155,15 +155,15 @@ class SqueezeNet(object):
                  pooling_type='max',
                  padding='VALID'):
     if pooling_type == 'avg':
-      pool = tf.compat.v1.layers.average_pooling2d(
-          inputs=layer_input,
-          pool_size=[1, 14, 14, 1],
+      pool = tf.compat.v1.nn.avg_pool(
+          value=layer_input,
+          ksize=[1, 14, 14, 1],
           strides=[1, 1, 1, 1],
           padding=padding)
     elif pooling_type == 'max':
-      pool = tf.compat.v1.layers.max_pooling2d(
-          inputs=layer_input,
-          pool_size=[1, 3, 3, 1],
+      pool = tf.compat.v1.nn.max_pool(
+          value=layer_input,
+          ksize=[1, 3, 3, 1],
           strides=[1, 2, 2, 1],
           padding=padding)
     return pool
