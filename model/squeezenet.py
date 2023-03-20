@@ -62,7 +62,7 @@ class SqueezeNet(object):
         net['conv1'],
         self.weight_variable(
               net['conv1'].get_shape(),
-              name='conv1_w')
+              name='conv1_w'),
         b=self.model['conv1_bias'])
     
     print('conv1 shape:',net['conv1'].shape)
