@@ -131,13 +131,13 @@ class SqueezeNet(object):
 
   def weight_variable(self, shape, name=None, init='xavier'):
     if init == 'variance':
-      assert False
+      # assert False
       initial = tf.compat.v1.get_variable(
           'W' + name,
           shape,
           initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=2.0))
     elif init == 'xavier':
-      assert False
+      # assert False
       initial = tf.compat.v1.get_variable(
           'W' + name, shape, initializer=tf.compat.v1.keras.initializers.VarianceScaling(scale=1.0, mode="fan_avg", distribution="uniform"))
     else:
