@@ -42,7 +42,7 @@ class SqueezeNet(object):
     # images = self.imgs-self.imgs
 
     # images = tf.transpose(images, [0,2,1,3])
-
+    print(images.shape)
     net['input'] = images
     # conv1_1
     
@@ -61,12 +61,9 @@ class SqueezeNet(object):
         'relu1', 
         net['conv1'],
         self.weight_variable(
-              net['conv1'].get_shape(),
-              name='conv1_w'),
+            net['conv1'].get_shape(),
+            name='relu1_w'),
         b=self.model['conv1_bias'])
-    
-    print('conv1 shape:',net['conv1'].shape)
-    print('input img shape:', net['input'].shape)
     
     net['pool1'] = self.pool_layer('pool1', net['relu1'])
 
