@@ -139,6 +139,7 @@ class GehlerDataSet(DataSet):
 
     #print filenames
     #print filenames2
+    print('filename', filenames2)
     for i in range(len(filenames)):
       assert filenames[i][:-4] == filenames2[i][:-4]
     for i in range(len(filenames)):
