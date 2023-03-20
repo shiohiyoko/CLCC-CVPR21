@@ -1,7 +1,7 @@
 
 
 class ImageRecord:
-  def __init__(self, dataset, fn, illum, mcc_coord, img, extras=None):
+  def __init__(self, dataset, fn, illum, mcc_coord, cc24s, img, extras=None):
     self.dataset = dataset
     self.fn = fn
     self.illum = illum
@@ -9,6 +9,7 @@ class ImageRecord:
     # BRG images
     self.img = img
     self.extras = extras
+    self.cc24s = cc24s
 
   def __repr__(self):
     return '[%s, %s, (%f, %f, %f)]' % (self.dataset, self.fn, self.illum[0],
