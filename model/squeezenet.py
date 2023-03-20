@@ -55,7 +55,7 @@ class SqueezeNet(object):
               init=np.transpose(self.model['conv1_weights'], [2, 3, 1, 0])),
           stride=[1, 2, 2, 1],
           padding='VALID') + self.model['conv1_bias'][None, None, None, :]
-    print('conv1 shape', net['conv1'].get_shape())
+    # print('conv1 shape', net['conv1'].get_shape())
 
     net['relu1'] = self.relu_layer(
         'relu1', 
@@ -185,7 +185,7 @@ class SqueezeNet(object):
     fire = {}
 
     shape = layer_input.get_shape()
-    print(shape)
+    # print(shape)
 
     # squeeze np.transpose(self.model['conv1_weights'], [2,3,1,0])),
     s1_weight = self.weight_variable(
@@ -217,7 +217,7 @@ class SqueezeNet(object):
         layer_name + '_e1', fire['relu1'], W=e1_weight,
         padding='SAME')  # 'SAME' and 'VALID' padding should be the same here
     fire['e3'] = self.conv_layer(
-        layer_name + '_e3', fire['relu1'], W=e3_weight, padding='SAME')
+        layer_name + '_e3', fire['e1'], W=e3_weight, padding='SAME')
     fire['concat'] = tf.concat([
         tf.add(fire['e1'],
                self.bias_variable(
