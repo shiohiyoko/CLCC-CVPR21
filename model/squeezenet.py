@@ -94,10 +94,6 @@ class SqueezeNet(object):
     net['relu10'] = self.relu_layer(
         'relu10',
         net['conv10'],
-        self.weight_variable(
-              [1, 1, 512, 1000],
-              name='conv10',
-              init=np.transpose(self.model['conv10_weights'], [2, 3, 1, 0])),
         b=self.bias_variable([1000], 'relu10_b', value=0.0))
 #     print(net['relu10'].shape)
     net['pool10'] = self.pool_layer('pool10', net['relu10'], pooling_type='avg')
