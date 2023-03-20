@@ -71,14 +71,15 @@ class DataSet:
       #return pickle.load(f)
       return pickle.load(f, encoding="unicode")
 
-  def get_image_pack_fn(self, fold):
+  def get_image_pack_fn(self, fold, idx):
     return self.get_directory() + self.get_subset_name(
-    ) + 'image_pack.%d.pkl' % fold
+    ) + idx + '/image_pack.%d.pkl' % fold
 
   def dump_image_pack(self, image_pack, fold):
-    with open(self.get_image_pack_fn(fold), 'wb') as f:
-      #pickle.dump(image_pack, f, protocol=-1)
-      pickle.dump(image_pack, f, protocol=-1)
+    for idx in image_pack:
+      with open(self.get_image_pack_fn(fold, idx), 'wb') as f:
+        #pickle.dump(image_pack, f, protocol=-1)
+        pickle.dump(image_pack, f, protocol=-1)
 
   def load_image_pack(self, fold):
     with open(self.get_meta_data_fn()) as f:
@@ -140,8 +141,7 @@ class GehlerDataSet(DataSet):
 
     #print filenames
     #print filenames2
-    print('test', test_split[0].shape)
-    print('filename', filenames2)
+    print('filename', folds)
     for i in range(len(filenames)):
       assert filenames[i][:-4] == filenames2[i][:-4]
     for i in range(len(filenames)):
