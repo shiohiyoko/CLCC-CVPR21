@@ -145,7 +145,7 @@ class SqueezeNet(object):
     return self.weights[name]
 
   def relu_layer(self, layer_name, layer_input, b=None):
-    if b:
+    if b is not None:
       layer_input += b
     
     relu = tf.nn.relu(layer_input)
@@ -215,7 +215,6 @@ class SqueezeNet(object):
     fire['relu1'] = self.relu_layer(
         layer_name + '_relu1',
         fire['s1'],
-        s1_weight,
         b=self.bias_variable([s1x1], layer_name + '_fire_bias_s1'))
 
     fire['e1'] = self.conv_layer(
@@ -238,9 +237,9 @@ class SqueezeNet(object):
 
     if residual:
       fire['relu2'] = self.relu_layer(layer_name + 'relu2_res',
-                                      tf.add(fire['concat'], e3_weight, layer_input))
+                                      tf.add(fire['concat'], layer_input))
     else:
-      fire['relu2'] = self.relu_layer(layer_name + '_relu2', fire['concat'], e3_weight)
+      fire['relu2'] = self.relu_layer(layer_name + '_relu2', fire['concat'])
     self.net[layer_name + '_debug'] = fire['relu2']
     return fire['relu2']
 
