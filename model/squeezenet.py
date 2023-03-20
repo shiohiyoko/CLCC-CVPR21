@@ -60,12 +60,8 @@ class SqueezeNet(object):
     net['relu1'] = self.relu_layer(
         'relu1', 
         net['conv1'],
-        self.weight_variable(
-            net['conv1'].get_shape(),
-            name='relu1_w'),
-        b=self.model['conv1_bias'])
+        b=self.bias_variable([64], 'relu1_b', value=0.0))
     
-    print('relu shape', net['relu1'].get_shape())
     
     net['pool1'] = self.pool_layer('pool1', net['relu1'])
 
@@ -149,13 +145,10 @@ class SqueezeNet(object):
     return self.weights[name]
 
   def relu_layer(self, layer_name, layer_input, weight, b=None):
-    # if b is not None:
-    #   layer_input += b
-    print('relu input', layer_input.get_shape())
-    print('weight', weight.get_shape())
-    print('b', b.shape)
+    if b is not None:
+      layer_input += b
     
-    relu = tf.compat.v1.nn.relu_layer(layer_input, weight, b)
+    relu = tf.nn.relu_layer(layer_input)
     return relu
 
   def pool_layer(self,
