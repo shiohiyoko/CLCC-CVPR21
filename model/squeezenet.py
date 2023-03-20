@@ -28,7 +28,7 @@ class SqueezeNet(object):
     # The mean values are from caffe protofile from DeepScale/SqueezeNet github repo.
     # self.mean = tf.constant([123.0, 117.0, 104.0],
     #                         dtype=tf.float32, shape=[1, 1, 1, 3], name='img_mean')
-    self.mean = tf.constant(
+    self.mean = tf.compat.v1.constant(
         [104.0, 117.0, 123.0],
         dtype=tf.float32,
         shape=[1, 1, 1, 3],
@@ -89,13 +89,17 @@ class SqueezeNet(object):
     net['relu10'] = self.relu_layer(
         'relu10',
         net['conv10'],
+        self.weight_variable(
+            [1, 1, 512, 1000],
+              name='conv10',
+              init=np.transpose(self.model['conv10_weights'], [2, 3, 1, 0])),
         b=self.bias_variable([1000], 'relu10_b', value=0.0))
 #     print(net['relu10'].shape)
     net['pool10'] = self.pool_layer('pool10', net['relu10'], pooling_type='avg')
 #     print(net['pool10'].shape)
-    avg_pool_shape = tf.shape(input=net['pool10'])
+    avg_pool_shape = tf.compat.v1.shape(input=net['pool10'])
 
-    net['pool_reshaped'] = tf.reshape(net['pool10'], [avg_pool_shape[0], -1])
+    net['pool_reshaped'] = tf.compat.v1.reshape(net['pool10'], [avg_pool_shape[0], -1])
     self.fc2 = net['pool_reshaped']
     self.logits = net['pool_reshaped']
 
@@ -135,10 +139,10 @@ class SqueezeNet(object):
     self.weights[name] = initial
     return self.weights[name]
 
-  def relu_layer(self, layer_name, layer_input, b=None):
-    if b is not None:
-      layer_input += b
-    relu = tf.nn.relu(layer_input)
+  def relu_layer(self, layer_name, layer_input, weight, b=None):
+    # if b is not None:
+    #   layer_input += b
+    relu = tf.compat.v1.nn.relu_layer(layer_input, weight, b)
     return relu
 
   def pool_layer(self,
@@ -147,15 +151,15 @@ class SqueezeNet(object):
                  pooling_type='max',
                  padding='VALID'):
     if pooling_type == 'avg':
-      pool = tf.nn.avg_pool2d(
-          input=layer_input,
-          ksize=[1, 14, 14, 1],
+      pool = tf.compat.v1.layers.average_pooling2d(
+          inputs=layer_input,
+          pool_size=[1, 14, 14, 1],
           strides=[1, 1, 1, 1],
           padding=padding)
     elif pooling_type == 'max':
-      pool = tf.nn.max_pool2d(
-          input=layer_input,
-          ksize=[1, 3, 3, 1],
+      pool = tf.compat.v1.layers.max_pooling2d(
+          inputs=layer_input,
+          pool_size=[1, 3, 3, 1],
           strides=[1, 2, 2, 1],
           padding=padding)
     return pool
@@ -211,7 +215,7 @@ class SqueezeNet(object):
         padding='SAME')  # 'SAME' and 'VALID' padding should be the same here
     fire['e3'] = self.conv_layer(
         layer_name + '_e3', fire['relu1'], W=e3_weight, padding='SAME')
-    fire['concat'] = tf.concat([
+    fire['concat'] = tf.compat.v1.sparse_concat(3,[
         tf.add(fire['e1'],
                self.bias_variable(
                    [e1x1],
@@ -222,7 +226,7 @@ class SqueezeNet(object):
                    [e3x3],
                    name=layer_name + '_fire_bias_e3',
                    value=self.model[layer_name + '/' + 'expand3x3_bias']))
-    ], 3)
+    ])
 
     if residual:
       fire['relu2'] = self.relu_layer(layer_name + 'relu2_res',
