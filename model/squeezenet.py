@@ -77,7 +77,7 @@ class SqueezeNet(object):
     net['fire7'] = self.fire_module('fire7', net['fire6'], 48, 192, 192)
     net['fire8'] = self.fire_module('fire8', net['fire7'], 64, 256, 256)
     net['pool8'] = self.pool_layer('pool8', net['fire8'])
-    net['fire9'] = self.fire_module('fire9', net['pool'], 64, 256, 256)
+    net['fire9'] = self.fire_module('fire9', net['pool8'], 64, 256, 256)
 #     print(net['fire9'].shape)
 
     # 50% dropout removed
