@@ -101,7 +101,7 @@ def conv(x, filter_height, filter_width, num_filters, stride_y, stride_x, name,
     input_channels = int(x.get_shape()[-1])
 
     # Create lambda function for the convolution
-    convolve = lambda i, k: tf.nn.conv2d(input=i, filters=k,
+    convolve = lambda i, k: tf.compat.v1.nn.conv2d(input=i, filters=k,
                                          strides=[1, stride_y, stride_x, 1],
                                          padding=padding)
 
@@ -131,7 +131,7 @@ def conv(x, filter_height, filter_width, num_filters, stride_y, stride_x, name,
     bias = tf.reshape(tf.nn.bias_add(conv, biases), tf.shape(input=conv))
 
     # Apply relu function
-    relu = tf.nn.relu(bias, name=scope.name)
+    relu = tf.compat.v1.nn.relu(bias, name=scope.name)
 
     return relu
 
@@ -150,7 +150,7 @@ def fc(x, num_in, num_out, name, relu=True):
 
     if relu:
         # Apply ReLu non linearity
-        relu = tf.nn.relu(act)
+        relu = tf.compat.v1.nn.relu(act)
         return relu
     else:
         return act
@@ -159,18 +159,18 @@ def fc(x, num_in, num_out, name, relu=True):
 def max_pool(x, filter_height, filter_width, stride_y, stride_x, name,
              padding='SAME'):
     """Create a max pooling layer."""
-    return tf.nn.max_pool2d(input=x, ksize=[1, filter_height, filter_width, 1],
+    return tf.compat.v1.nn.max_pool2d(input=x, ksize=[1, filter_height, filter_width, 1],
                           strides=[1, stride_y, stride_x, 1],
                           padding=padding, name=name)
 
 
 def lrn(x, radius, alpha, beta, name, bias=1.0):
     """Create a local response normalization layer."""
-    return tf.nn.local_response_normalization(x, depth_radius=radius,
+    return tf.compat.v1.nn.local_response_normalization(x, depth_radius=radius,
                                               alpha=alpha, beta=beta,
                                               bias=bias, name=name)
 
 
 def dropout(x, keep_prob):
     """Create a dropout layer."""
-    return tf.nn.dropout(x, rate=1 - (keep_prob))
+    return tf.compat.v1.nn.dropout(x, rate=1 - (keep_prob))
