@@ -15,7 +15,7 @@ TRAIN_BATCH_SIZE = 16
 TRAIN_FOLDS = [0,1]
 TEST_FOLDS = [2]
 
-BACKBONE =  'alexnet' #'squeezenet' 
+BACKBONE = 'squeezenet' # 'alexnet'
 GLOBAL_WEIGHT_DECAY = 5.7e-5
 LEARNING_RATE = 3e-4
 PRETRAIN_EPOCHS = 5000
