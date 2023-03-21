@@ -143,8 +143,7 @@ class SqueezeNet(object):
   def relu_layer(self, layer_name, layer_input, b=None):
     if b is not None:
       layer_input += b
-    
-    relu = tf.nn.relu(layer_input)
+    relu = tf.compat.v1.nn.relu(layer_input)
     return relu
 
   def pool_layer(self,
@@ -218,7 +217,7 @@ class SqueezeNet(object):
         padding='SAME')  # 'SAME' and 'VALID' padding should be the same here
     fire['e3'] = self.conv_layer(
         layer_name + '_e3', fire['e1'], W=e3_weight, padding='SAME')
-    fire['concat'] = tf.concat([
+    fire['concat'] = tf.compat.v1.concat([
         tf.add(fire['e1'],
                self.bias_variable(
                    [e1x1],
