@@ -172,7 +172,7 @@ class SqueezeNet(object):
                  W,
                  stride=[1, 1, 1, 1],
                  padding='VALID'):
-    return tf.nn.conv2d(input=layer_input, filters=W, strides=stride, padding=padding)
+    return tf.compat.v1.layers.conv2d(input=layer_input, filters=W, strides=stride, padding=padding)
 
   def fire_module(self,
                   layer_name,
